@@ -2,7 +2,7 @@ import { Principal } from "./Principal";
 import { useState, useEffect } from "react";
 import {
   GetDataFromApi,
-  GetDataFromApibyName,
+  GetDataFromApiFiltered
 } from "../service/GetDataFromApi";
 import { HashRouter as Router, Switch, Route } from "react-router-dom";
 import { CharacterDetail } from "./CharacterDetails";
@@ -16,24 +16,22 @@ function App() {
   const [valueName, SetValueName] = useState(GetLS("filterName", ""));
   const [species, setSpecies] = useState(GetLS("filterSpecies", ""));
 
+  useEffect( () => {
+    console.log("Ha cambiado valueName o Species");
+
+    GetDataFromApiFiltered( valueName, species )
+    .then((characterArray) => {
+      setData(characterArray);
+    });
+
+  },[valueName,species]);
+
   useEffect(() => {
-    setFail(false);
-    if (valueName) {
-      GetDataFromApibyName(valueName)
-        .then((characterArray) => {
-          setData(characterArray);
-          SetLS("characterArray", characterArray);
-        })
-        .catch(() => {
-          setFail(true);
-        });
-    } else {
-      GetDataFromApi().then((characterArray) => {
-        setData(characterArray);
-        SetLS("characterArray", characterArray);
-      });
-    }
-  }, [valueName]); //con dependencia del valor del input
+    GetDataFromApi().then((characterArray) => {
+      setData(characterArray);
+      SetLS("characterArray", characterArray);
+    });
+  }, []); //con dependencia del valor del input
 
   return (
     <Router>
@@ -48,6 +46,16 @@ function App() {
               onChangeName={(e) => {
                 SetValueName(e.currentTarget.value);
                 SetLS("filterName", e.currentTarget.value);
+                /*
+                                const newValue = e.currentTarget.value;
+                if( myTimeout !== null ) {
+                  clearTimeout(myTimeout);
+                }
+                myTimeout = setTimeout(() => {
+                  SetValueName(newValue);
+                  SetLS("filterName", newValue);
+                }, 400);
+                */
               }}
               onChangeSpecies={(e) => {
                 setSpecies(e.currentTarget.value);

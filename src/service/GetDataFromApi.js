@@ -46,6 +46,7 @@ async function GetDataFromApi() {
 
 function GetDataFromApibyName(name) {
   const ENDPOINT = "https://rickandmortyapi.com/api/character/?name=";
+
   return fetch(ENDPOINT + name)
     .then((response) => response.json())
     .then((response) =>
@@ -62,5 +63,24 @@ function GetDataFromApibyName(name) {
       })
     );
 }
+
+/*
+  EJEMPLO Clousure
+*/
+
+function functionClousure() {
+  const dataPrivate = "Hola Lucia y Maria";
+
+  return function() {
+    console.log("Estoy dentro de la clousure");
+    console.log("Este es mi mensaje secreto: ", dataPrivate);
+  }
+}
+
+const retorno = functionClousure();
+
+retorno();
+
+/* ---- */
 
 export { GetDataFromApi, GetDataFromApibyName };

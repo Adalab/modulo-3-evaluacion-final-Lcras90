@@ -1,7 +1,7 @@
 const ENDPOINT = "https://rickandmortyapi.com/api/character";
 const charactersList = [];
 
-function fetchPage(response)  {
+async function fetchPage(response)  {
   const charactersOfThisPage = response.results.map((character) => {
     return {
       id: character.id,
@@ -16,9 +16,15 @@ function fetchPage(response)  {
   charactersList.push( ...charactersOfThisPage );
 
   if( response.info.next !== null ) {
-    return fetch(response.info.next)
+    const nextResponse = await fetch(response.info.next);
+    const nextResponseJson = await nextResponse.json();
+    const newResults = await fetchPage( nextResponseJson );
+    return newResults;
+
+    /*
     .then((response) => response.json())
     .then( fetchPage );
+    */
   }
   else {
     return charactersList;
@@ -26,11 +32,18 @@ function fetchPage(response)  {
   
 }
 
-function GetDataFromApi() {
+async function GetDataFromApi() {
+/*
   return fetch(ENDPOINT)
     .then((response) => response.json())
     .then( fetchPage );
+*/
+  const response = await fetch(ENDPOINT);
+  const responseJson = await response.json();
+  return await fetchPage( responseJson );
 }
+
+
 function GetDataFromApibyName(name) {
   const ENDPOINT = "https://rickandmortyapi.com/api/character/?name=";
   return fetch(ENDPOINT + name)

@@ -16,23 +16,17 @@ function App() {
   const [valueName, SetValueName] = useState(GetLS("filterName", ""));
   const [species, setSpecies] = useState(GetLS("filterSpecies", ""));
 
-  useEffect(() => {
-    setFail(false);
-    if (valueName) {
-      GetDataFromApibyName(valueName)
-        .then((characterArray) => {
-          setData(characterArray);
-          SetLS("characterArray", characterArray);
-        })
-        .catch(() => {
-          setFail(true);
-        });
-    } else {
-      GetDataFromApi().then((characterArray) => {
+  useEffect( () => {
+    async function dummy() {
+      setFail(false);
+
+        const characterArray = await GetDataFromApi();
+
         setData(characterArray);
         SetLS("characterArray", characterArray);
-      });
+
     }
+    dummy();
   }, [valueName]); //con dependencia del valor del input
 
   return (
